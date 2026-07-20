@@ -34,7 +34,7 @@ for (let i = 0; i < students.length; i++) {
     tidakLulusCount++;
   }
   
-  totalSkor += currentStudent.score;
+  totalSkor += currentStudent.score; // nilai lama ditambah nilai baru misal 0+90, 90+65
 
   // Menampilkan info detail per siswa
   console.log(`Nama: ${currentStudent.name}`);
