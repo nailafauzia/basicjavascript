@@ -16,3 +16,36 @@ authors.forEach(author => {
   console.log(`Jumlah Buku: ${bukuPenulis.length}\n`);
   
 });
+
+// --- Task 9: Validasi Relasi Data ---
+
+// 1. Menambahkan data bermasalah tanpa merusak data 'books' yang asli
+const dataBukuBaru = [
+  ...books, 
+  {
+    id: 5,
+    title: "Unknown Book",
+    authorId: 99, // Ini ID yang tidak ada di data authors
+    year: 2024,
+    available: true
+  }
+];
+
+console.log("=== Pengecekan Validasi Data ===");
+
+// 2. Melakukan perulangan pada array yang baru
+dataBukuBaru.forEach(book => {
+  // Mencari penulis berdasarkan authorId
+  const author = authors.find(a => a.id === book.authorId);
+  
+  // 3. Validasi dengan Pengkondisian (If/Else)
+  if (!author) {
+    // Jika author TIDAK ditemukan (undefined)
+    console.log(book.title);
+    console.log("ERROR");
+    console.log("Author tidak ditemukan.\n");
+  } else {
+    // Jika author ditemukan, program tetap berjalan normal
+    console.log(`${book.title} - Penulis: ${author.name} (Aman)\n`);
+  }
+});
