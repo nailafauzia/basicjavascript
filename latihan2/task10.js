@@ -14,16 +14,45 @@ const books = [
 ];
 
 // --- Task 10: Dashboard Implementation ---
-console.log("=== TASK 10: DASHBOARD ===");
 function tampilkanDashboard() {
-  const totalPenulis = authors.length;
+  // 1. Menghitung Total Buku & Penulis
   const totalBuku = books.length;
+  const totalPenulis = authors.length;
+  
+  // 2. Menghitung Status Buku
   const bukuTersedia = books.filter(b => b.available === true).length;
   const bukuDipinjam = totalBuku - bukuTersedia;
 
-  console.log(`Total Penulis: ${totalPenulis}`);
-  console.log(`Total Buku: ${totalBuku}`);
-  console.log(`Buku Tersedia: ${bukuTersedia}`);
-  console.log(`Buku Sedang Dipinjam: ${bukuDipinjam}\n`);
+  // 3. Menghitung Penulis Berdasarkan Negara menggunakan filter()
+  const penulisIndonesia = authors.filter(a => a.country === "Indonesia").length;
+  const penulisLuar = authors.filter(a => a.country !== "Indonesia").length; // !== artinya "TIDAK SAMA DENGAN"
+
+  // 4. Mencari Buku Terbaru dan Terlama
+  // .map() digunakan untuk mengekstrak hanya 'tahun' dari seluruh buku menjadi array [2008, 2018, 2019, 2005]
+  const arrayTahun = books.map(book => book.year);
+  
+  // Math.max dan Math.min adalah fungsi bawaan JavaScript untuk mencari angka terbesar dan terkecil
+  const bukuTerbaru = Math.max(...arrayTahun);
+  const bukuTerlama = Math.min(...arrayTahun);
+
+  // --- MENCETAK KE TERMINAL SESUAI FORMAT PDF ---
+  console.log("========================");
+  console.log("");
+  console.log("LIBRARY DASHBOARD");
+  console.log("");
+  console.log("========================");
+  console.log("");
+  console.log(`Total Buku\t\t: ${totalBuku}`);
+  console.log(`Total Penulis\t\t: ${totalPenulis}`);
+  console.log(`Buku Tersedia\t\t: ${bukuTersedia}`);
+  console.log(`Buku Dipinjam\t\t: ${bukuDipinjam}`);
+  console.log(`Penulis Indonesia\t: ${penulisIndonesia}`);
+  console.log(`Penulis Luar Indonesia\t: ${penulisLuar}`);
+  console.log(`Buku Terbaru\t\t: ${bukuTerbaru}`);
+  console.log(`Buku Terlama\t\t: ${bukuTerlama}`);
+  console.log("");
+  console.log("========================");
 }
+
+// Memanggil fungsi dashboard
 tampilkanDashboard();
