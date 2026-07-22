@@ -1,1 +1,0 @@
-const authors = [ { id: 1, name: "Robert C. Martin", country: "USA" }, { id: 2, name: "James Clear", country: "USA" }, { id: 3, name: "Marijn Haverbeke", country: "Netherlands" }, { id: 4, name: "Andrea Hirata", country: "Indonesia" } ];
