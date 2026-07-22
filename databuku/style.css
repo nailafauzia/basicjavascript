@@ -92,6 +92,60 @@ ul.data-buku li {
     animation: slideIn 0.3s ease-out forwards;
 }
 
+/* Mengatur agar teks buku dan tombol Edit sejajar secara horizontal */
+ul.data-buku li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Desain khusus untuk tombol Edit */
+.btn-edit {
+    background-color: #daa316; /* Warna emas senada dengan container */
+    color: #2f2205; /* Warna teks coklat gelap */
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    margin-left: 10px; /* Jarak antara teks buku dan tombol */
+}
+
+/* Efek saat kursor diarahkan ke tombol Edit */
+.btn-edit:hover {
+    background-color: #c49213;
+}
+
+/* Wadah untuk grup tombol (Edit & Hapus) */
+.aksi-tombol {
+    display: flex;
+    gap: 8px; /* Memberikan jarak antar tombol di dalam grup */
+}
+
+/* Desain khusus untuk tombol Edit (diperbarui) */
+.btn-edit {
+    background-color: #ffe299; 
+    color: #2f2205; 
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    /* margin-left dihapus karena sudah diatur oleh gap di .aksi-tombol */
+}
+
+.btn-edit:hover {
+    background-color: #c49213;
+}
+
+/* Desain khusus untuk tombol Hapus */
+.btn-hapus {
+    background-color: #390303; /* Warna merah sebagai tanda bahaya/hapus */
+    color: white;
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+}
+
+.btn-hapus:hover {
+    background-color: #dc2626; /* Warna merah lebih gelap saat di-hover */
+}
 /* Animasi kemunculan item baru */
 @keyframes slideIn {
     from {

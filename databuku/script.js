@@ -3,19 +3,45 @@ const inputBuku = document.querySelector('input[name="nama_buku"]');
 const btnTambah = document.getElementById('tambah');
 const ulDataBuku = document.querySelector('.data-buku');
 
-// 1. Mengambil data dari localStorage saat halaman pertama kali dimuat
-// Jika belum ada data ('daftarBuku' kosong), maka buat array kosong []
+// 1. Mengambil data dari localStorage
 let daftarBuku = JSON.parse(localStorage.getItem('daftarBuku')) || [];
 
-// 2. Fungsi untuk merender/menampilkan list buku dari array ke layar
+// 2. Fungsi untuk merender/menampilkan list buku
 function renderBuku() {
-    // Kosongkan isi <ul> terlebih dahulu agar tidak terjadi duplikasi saat render ulang
     ulDataBuku.innerHTML = '';
     
-    // Looping data dari array untuk dibuatkan elemen <li>
-    daftarBuku.forEach(function(buku) {
+    daftarBuku.forEach(function(buku, index) {
         const li = document.createElement('li');
-        li.textContent = buku;
+        
+        const spanTeks = document.createElement('span');
+        spanTeks.textContent = buku;
+
+        // Wadah grup tombol Edit & Hapus
+        const grupTombol = document.createElement('div');
+        grupTombol.className = 'aksi-tombol';
+
+        // Tombol Edit
+        const btnEdit = document.createElement('button');
+        btnEdit.textContent = 'Edit';
+        btnEdit.className = 'btn-edit';
+        btnEdit.onclick = function() {
+            editBuku(index);
+        };
+
+        // Tombol Hapus
+        const btnHapus = document.createElement('button');
+        btnHapus.textContent = 'Hapus';
+        btnHapus.className = 'btn-hapus';
+        btnHapus.onclick = function() {
+            hapusBuku(index);
+        };
+
+        grupTombol.appendChild(btnEdit);
+        grupTombol.appendChild(btnHapus);
+
+        li.appendChild(spanTeks);
+        li.appendChild(grupTombol);
+        
         ulDataBuku.appendChild(li);
     });
 }
@@ -24,36 +50,50 @@ function renderBuku() {
 function tambahBuku() {
     const nilaiBuku = inputBuku.value.trim();
 
-    // Validasi: pastikan input tidak kosong
     if (nilaiBuku === '') {
         alert('Mohon masukkan nama buku terlebih dahulu!');
         return;
     }
 
-    // Masukkan data baru ke dalam array daftarBuku
     daftarBuku.push(nilaiBuku);
-
-    // Simpan array yang sudah diperbarui ke localStorage
-    // (localStorage hanya menerima string, jadi kita ubah array menjadi format JSON string)
     localStorage.setItem('daftarBuku', JSON.stringify(daftarBuku));
-
-    // Panggil fungsi render untuk memperbarui tampilan di layar
     renderBuku();
 
-    // Kosongkan input kembali dan kembalikan fokus kursor
     inputBuku.value = '';
     inputBuku.focus();
 }
 
-// 4. Menjalankan fungsi tambahBuku saat tombol diklik
+// 4. Fungsi untuk mengedit buku (Yang tadi kemungkinan terhapus)
+function editBuku(index) {
+    const bukuLama = daftarBuku[index];
+    const bukuBaru = prompt('Edit nama buku:', bukuLama);
+
+    if (bukuBaru !== null && bukuBaru.trim() !== '') {
+        daftarBuku[index] = bukuBaru.trim();
+        localStorage.setItem('daftarBuku', JSON.stringify(daftarBuku));
+        renderBuku();
+    }
+}
+
+// 5. Fungsi untuk menghapus buku
+function hapusBuku(index) {
+    const yakin = confirm('Apakah kamu yakin ingin menghapus buku ini?');
+
+    if (yakin) {
+        daftarBuku.splice(index, 1);
+        localStorage.setItem('daftarBuku', JSON.stringify(daftarBuku));
+        renderBuku();
+    }
+}
+
+// 6. Event Listeners
 btnTambah.addEventListener('click', tambahBuku);
 
-// Fitur tambahan: Menjalankan fungsi saat tombol 'Enter' ditekan pada keyboard
 inputBuku.addEventListener('keypress', function(event) {
     if (event.key === 'Enter') {
         tambahBuku();
     }
 });
 
-// 5. Panggil renderBuku() saat file script pertama kali dijalankan (saat halaman dimuat/refresh)
+// 7. Render pertama kali saat halaman dimuat
 renderBuku();

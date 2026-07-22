@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    /* =========================================
+       2. CSS: Desain dan Warna (Desainer Interior)
+       ========================================= */
+    #ruang-tamu {
+      width: 300px;
+      height: 150px;
+      background-color: white;     /* Warna cat awal */
+      border: 3px solid black;     /* Tembok */
+      text-align: center;
+      padding-top: 50px;
+      font-size: 20px;
+      transition: 0.5s;            /* Efek transisi halus */
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =========================================
+       1. HTML: Kerangka Bangunan (Tukang Bangunan)
+       ========================================= -->
+  <div id="ruang-tamu">
+    Lampu sedang menyala. Terang! 💡
+  </div>
+  
+  <button id="sakelar">Matikan Lampu</button>
+
+
+  <!-- =========================================
+       3. JAVASCRIPT: Remot Kontrol z 
+       ========================================= -->
+  <script>
+    // LANGKAH A: Baca denah ajaib (DOM) dan temukan targetnya
+    const ruangan = document.getElementById("ruang-tamu");
+    const tombol = document.getElementById("sakelar");
+
+    // LANGKAH B: Pasang "telinga" pada tombol untuk menunggu klik
+    tombol.addEventListener("click", function() {
+      
+      // Cek apakah lampu sedang menyala (warna putih)
+      if (ruangan.style.backgroundColor !== "black") {
+        
+        // MANIPULASI CSS: Mengecat ulang dinding secara instan!
+        ruangan.style.backgroundColor = "black";
+        ruangan.style.color = "white";
+        
+        // MANIPULASI HTML: Mengganti barang (teks) di dalam ruangan!
+        ruangan.innerHTML = "Lampu dimatikan. Gelap! 🌙";
+        tombol.innerHTML = "Nyalakan Lampu";
+        
+      } else {
+        
+        // Mengembalikan ruangan seperti semula
+        ruangan.style.backgroundColor = "white";
+        ruangan.style.color = "black";
+        
+        ruangan.innerHTML = "Lampu sedang menyala. Terang! 💡";
+        tombol.innerHTML = "Matikan Lampu";
+        
+      }
+    });
+  </script>
+
+</body>
+</html>
