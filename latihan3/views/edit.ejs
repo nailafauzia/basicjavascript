@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Buku</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 1. HAPUS LINK LAMA, PASTE LINK BARU DARI GOOGLE DISINI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
+    <!-- 2. UBAH NAMA FONT DI SINI SESUAI PETUNJUK GOOGLE -->
+    <style>
+        .font-klasik {
+            font-family: "Playfair Display", serif;
+        }
+    </style>
+</head>
+
+<!-- Menggunakan bg gelap dan memanggil class .font-klasik yang kita buat di atas -->
+<body class="bg-[#2b2b2b] min-h-screen flex items-center justify-center font-klasik py-12 px-4">
+    
+    <!-- Kotak Utama Warna Kuning Mustard -->
+    <div class="bg-[#dda71a] w-full max-w-xl rounded-2xl shadow-2xl p-8 border-2 border-black/10">
+        
+        <h2 class="text-3xl font-bold mb-8 text-black text-center tracking-widest border-b-2 border-black/20 pb-4">
+            Edit Buku No <%= buku.id %>
+        </h2>
+        
+        <form action="/edit/<%= buku.id %>" method="POST" class="space-y-5">
+            <!-- Input Judul -->
+            <div>
+                <label class="block text-sm font-bold text-black/80 mb-2 tracking-wide">Judul Buku</label>
+                <input type="text" name="title" value="<%= buku.title %>" required 
+                       class="w-full rounded-xl px-4 py-3 text-lg border-none focus:outline-none focus:ring-4 focus:ring-amber-700/30 shadow-inner text-gray-800">
+            </div>
+            
+            <!-- Input Penulis -->
+            <div>
+                <label class="block text-sm font-bold text-black/80 mb-2 tracking-wide">Nama Penulis</label>
+                <% 
+                    let namaPenulisVal = buku.authorName;
+                    if (!namaPenulisVal) {
+                        const penulisLama = dataPenulis.find(p => p.id === buku.authorId);
+                        namaPenulisVal = penulisLama ? penulisLama.name : '';
+                    }
+                %>
+                <input type="text" name="authorName" value="<%= namaPenulisVal %>" required 
+                       class="w-full rounded-xl px-4 py-3 text-lg border-none focus:outline-none focus:ring-4 focus:ring-amber-700/30 shadow-inner text-gray-800">
+            </div>
+            
+            <!-- Input Tahun Terbit -->
+            <div>
+                <label class="block text-sm font-bold text-black/80 mb-2 tracking-wide">Tahun Terbit</label>
+                <input type="number" name="year" value="<%= buku.year %>" required 
+                       class="w-full rounded-xl px-4 py-3 text-lg border-none focus:outline-none focus:ring-4 focus:ring-amber-700/30 shadow-inner text-gray-800">
+            </div>
+            
+            <!-- Input Status Ketersediaan -->
+            <div>
+                <label class="block text-sm font-bold text-black/80 mb-2 tracking-wide">Status Ketersediaan</label>
+                <select name="available" 
+                        class="w-full rounded-xl px-4 py-3 text-lg border-none focus:outline-none focus:ring-4 focus:ring-amber-700/30 shadow-inner text-gray-800 bg-white">
+                    <option value="true" <%= buku.available === true ? 'selected' : '' %>>Tersedia</option>
+                    <option value="false" <%= buku.available === false ? 'selected' : '' %>>Sedang Dipinjam</option>
+                </select>
+            </div>
+            
+            <!-- Area Tombol -->
+            <div class="flex justify-end space-x-4 pt-6">
+                <!-- Tombol Batal Transparan -->
+                <a href="/" class="px-6 py-3 bg-black/10 text-black rounded-xl hover:bg-black/20 font-bold tracking-wide transition-colors">
+                    Batal
+                </a>
+                <!-- Tombol Cokelat Gelap -->
+                <button type="submit" class="px-6 py-3 bg-[#3b2713] hover:bg-black text-white rounded-xl font-bold tracking-wider shadow-lg transition-colors">
+                    Update Data
+                </button>
+            </div>
+        </form>
+
+    </div>
+</body>
+</html>
