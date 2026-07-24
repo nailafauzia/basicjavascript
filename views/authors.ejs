@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Penulis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- LINK GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
+    <!-- CLASS CSS FONT -->
+    <style>
+        .font-klasik {
+            font-family: "Playfair Display", serif;
+        }
+    </style>
+</head>
+
+<body class="bg-[#2b2b2b] min-h-screen font-klasik flex justify-center py-12 px-4">
+
+    <!-- Kotak Utama Warna Kuning Mustard -->
+    <div class="bg-[#dda71a] w-full max-w-2xl rounded-2xl shadow-2xl p-8 border-2 border-black/10 h-fit">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-10 border-b-2 border-black/20 pb-4">
+            <h1 class="text-4xl font-bold text-black tracking-widest">Daftar Penulis</h1>
+            <a href="/" class="text-black/70 hover:text-black font-bold underline tracking-wide">&larr; Kembali ke Home</a>
+        </div>
+
+        <!-- (+) FORM TAMBAH PENULIS (Jurus Pamungkas Anti-Jebol) -->
+        <form action="/tambah-penulis" method="POST" class="flex flex-col md:flex-row w-full gap-3 mb-10">
+            
+            <!-- Pembungkus Input Nama (Pakai min-w-0 agar tidak jebol) -->
+            <div class="flex-[2] min-w-0">
+                <input type="text" name="name" placeholder="Nama penulis..." required 
+                       class="w-full rounded-xl px-4 py-3 text-lg border-none focus:outline-none focus:ring-4 focus:ring-amber-700/30 shadow-inner text-gray-800 placeholder-gray-500">
+            </div>
+            
+            <!-- Pembungkus Input Negara -->
+            <div class="flex-1 min-w-0">
+                <input type="text" name="country" placeholder="Asal negara..." required 
+                    class="w-full rounded-xl px-4 py-3 text-lg border-none focus:outline-none focus:ring-4 focus:ring-amber-700/30 shadow-inner text-gray-800 placeholder-gray-500">
+            </div>
+            
+            <!-- Pembungkus Tombol -->
+            <div class="flex-shrink-0">
+                <button type="submit" class="w-full bg-[#3b2713] hover:bg-black text-white px-6 py-3 rounded-xl text-lg font-bold tracking-wider shadow-lg transition-colors whitespace-nowrap">
+                    Tambah
+                </button>
+            </div>
+            
+        </form>
+
+        <!-- Daftar List Penulis (Wadah Kosong untuk Fetch JS) -->
+        <ul id="tempat-penulis" class="space-y-4">
+            <p class="text-center italic text-black/70">Memuat data API...</p>
+        </ul>
+
+    </div>
+
+    <!-- SCRIPT FETCH JS -->
+    <script>
+        // Mengambil data dari endpoint API
+        fetch('/api/authors')
+            .then(response => response.json())
+            .then(dataPenulis => {
+                const wadahPenulis = document.getElementById('tempat-penulis');
+                wadahPenulis.innerHTML = ''; // Kosongkan teks "Memuat..."
+
+                // Looping data penulis
+                dataPenulis.forEach(penulis => {
+                    // Mengambil huruf pertama untuk ikon bulat
+                    const inisial = penulis.name.charAt(0).toUpperCase();
+
+                    // Memasukkan struktur HTML persis seperti kode EJS sebelumnya
+                    wadahPenulis.innerHTML += `
+                        <li class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex items-center space-x-5 hover:shadow-md transition-shadow">
+                            
+                            <!-- Ikon Bulat Cokelat Gelap -->
+                            <div class="flex-shrink-0">
+                                <div class="w-14 h-14 rounded-full bg-[#3b2713] flex items-center justify-center text-[#dda71a] font-bold text-2xl shadow-inner">
+                                    ${inisial}
+                                </div>
+                            </div>
+                            
+                            <!-- Info Penulis -->
+                            <div class="flex-1 min-w-0">
+                                <p class="text-2xl font-bold text-black truncate">
+                                    ${penulis.name}
+                                </p>
+                                <p class="text-lg text-gray-600 truncate italic mt-1">
+                                    Asal Negara: ${penulis.country}
+                                </p>
+                            </div>
+                        </li>
+                    `;
+                });
+            })
+            .catch(error => {
+                console.error("Gagal memuat API:", error);
+                document.getElementById('tempat-penulis').innerHTML = "<p class='text-red-700 text-center font-bold'>Gagal mengambil data penulis.</p>";
+            });
+    </script>
+</body>
+</html>

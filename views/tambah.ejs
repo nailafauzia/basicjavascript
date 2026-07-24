@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Tambah Buku</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- LINK GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
+    <!-- CLASS CSS FONT -->
+    <style>
+        .font-klasik {
+            font-family: "Playfair Display", serif;
+        }
+    </style>
+</head>
+
+<body class="bg-[#2b2b2b] min-h-screen flex items-center justify-center font-klasik py-12 px-4">
+    
+    <!-- Kotak Utama Warna Kuning Mustard -->
+    <div class="bg-[#dda71a] w-full max-w-xl rounded-2xl shadow-2xl p-8 border-2 border-black/10">
+        
+        <h2 class="text-4xl font-bold mb-8 text-black text-center tracking-widest border-b-2 border-black/20 pb-4">
+            Tambah Buku Baru
+        </h2>
+        
+        <form action="/tambah" method="POST" class="space-y-5">
+            <!-- Input Judul -->
+            <div>
+                <label class="block text-lg font-bold text-black/90 mb-2 tracking-wide">Judul Buku</label>
+                <input type="text" name="title" required 
+                       class="w-full rounded-xl px-4 py-3 text-xl border-none focus:outline-none focus:ring-4 focus:ring-amber-700/30 shadow-inner text-gray-800">
+            </div>
+            
+            <!-- Input Penulis -->
+            <div>
+                <label class="block text-lg font-bold text-black/90 mb-2 tracking-wide">Nama Penulis</label>
+                <input type="text" name="authorName" required placeholder="Ketik nama penulis di sini..." 
+                       class="w-full rounded-xl px-4 py-3 text-xl border-none focus:outline-none focus:ring-4 focus:ring-amber-700/30 shadow-inner text-gray-800">
+            </div>
+            
+            <!-- Input Tahun Terbit -->
+            <div>
+                <label class="block text-lg font-bold text-black/90 mb-2 tracking-wide">Tahun Terbit</label>
+                <input type="number" name="year" required 
+                       class="w-full rounded-xl px-4 py-3 text-xl border-none focus:outline-none focus:ring-4 focus:ring-amber-700/30 shadow-inner text-gray-800">
+            </div>
+            
+            <!-- Input Status Ketersediaan -->
+            <div>
+                <label class="block text-lg font-bold text-black/90 mb-2 tracking-wide">Status Ketersediaan</label>
+                <select name="available" 
+                        class="w-full rounded-xl px-4 py-3 text-xl border-none focus:outline-none focus:ring-4 focus:ring-amber-700/30 shadow-inner text-gray-800 bg-white">
+                    <option value="true">Tersedia</option>
+                    <option value="false">Sedang Dipinjam</option>
+                </select>
+            </div>
+            
+            <!-- Area Tombol -->
+            <div class="flex justify-end space-x-4 pt-6 border-t-2 border-black/10 mt-6">
+                <!-- Tombol Batal -->
+                <a href="/" class="px-6 py-3 bg-black/10 text-black rounded-xl hover:bg-black/20 font-bold tracking-wide transition-colors text-lg">
+                    Batal
+                </a>
+                <!-- Tombol Simpan Cokelat Gelap -->
+                <button type="submit" class="px-6 py-3 bg-[#3b2713] hover:bg-black text-white rounded-xl font-bold tracking-wider shadow-lg transition-colors text-lg">
+                    Simpan Buku
+                </button>
+            </div>
+        </form>
+
+    </div>
+</body>
+</html>
