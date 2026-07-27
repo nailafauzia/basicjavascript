@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Buku</title>
+    <!-- Tutorial Ganti Font: Memasukkan font dari Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Data Buku</h1>
+            <p>Arsip Koleksi Buku</p>
+        </header>
+
+        <main>
+            <section class="form-section">
+                <h2 id="form-title">Tambah Koleksi Baru</h2>
+                <form id="book-form">
+                    <input type="hidden" id="book-id">
+                    
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="title">Judul Buku</label>
+                            <input type="text" id="title" required>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="author">Penulis</label>
+                            <input type="text" id="author" required>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="year">Tahun Terbit</label>
+                            <input type="number" id="year" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="cover">Sampul Buku (Opsional)</label>
+                            <input type="file" id="cover" accept="image/*">
+                            <!-- Preview gambar yang dipilih -->
+                            <img id="cover-preview" src="" alt="Preview Sampul" style="display: none;">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submit-btn">Simpan ke Katalog</button>
+                </form>
+            </section>
+
+            <section class="list-section">
+                <h2>Katalog Tersimpan</h2>
+                <div id="book-list" class="book-container">
+                    <!-- Data buku akan dirender di sini -->
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
