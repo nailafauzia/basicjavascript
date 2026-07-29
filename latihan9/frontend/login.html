@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Sistem</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    /* Font tetap dipertahankan sesuai aslinya, warna diubah jadi Pink Modern */
+    body { font-family: monospace; background-color: #2e1025; color: #111; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .login-container { background-color: #f472b6; padding: 40px; border-radius: 8px; width: 100%; max-width: 320px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+    h2 { text-align: center; margin-top: 0; font-weight: normal; font-size: 24px; letter-spacing: 1px; color: #111; }
+    .form-group { margin-bottom: 15px; }
+    input { width: 100%; padding: 12px; border: none; border-radius: 4px; box-sizing: border-box; font-family: monospace; outline: none; }
+    button { width: 100%; padding: 12px; background-color: #4a044e; color: white; border: none; border-radius: 4px; cursor: pointer; font-family: monospace; font-size: 16px; margin-top: 10px; transition: 0.2s; }
+    button:hover { background-color: #701a75; }
+    #error-msg { color: #be123c; font-size: 13px; text-align: center; margin-top: 10px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <div class="form-group">
+        <input type="email" id="email" placeholder="Email Anda" required>
+      </div>
+      <div class="form-group">
+        <input type="password" id="password" placeholder="Password (Min. 8 karakter)" required>
+      </div>
+      <button type="submit">Masuk</button>
+      <div id="error-msg"></div>
+    </form>
+  </div>
+
+  <script>
+    $('#loginForm').submit(function(e) {
+      e.preventDefault();
+      const payload = {
+        email: $('#email').val(),
+        password: $('#password').val()
+      };
+
+      $.ajax({
+        url: 'http://localhost:3000/api/login',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(payload),
+        success: function(response) {
+          localStorage.setItem('jwt_token', response.token);
+          window.location.href = 'dashboard.html';
+        },
+        error: function(xhr) {
+          const res = xhr.responseJSON;
+          let errMsg = 'Gagal login.';
+          if (res && res.errors) errMsg = res.errors[0].message;
+          else if (res && res.message) errMsg = res.message;
+          $('#error-msg').text(errMsg);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
