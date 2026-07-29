@@ -1,0 +1,13 @@
+# Folder & File AI Tools
+.agents/
+.claude/
+.windsurf/
+skills-lock
+
+# Dependencies & Environment Backend
+backend/node_modules/
+backend/.env
+
+# System Files Windows/Mac
+.DS_Store
+Thumbs.db

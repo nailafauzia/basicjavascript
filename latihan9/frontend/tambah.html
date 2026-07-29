@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tambah Buku Baru</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body { background-color: #2e1025; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .container { background-color: #f472b6; width: 100%; max-width: 400px; padding: 40px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    h2 { text-align: center; color: #111; margin-top: 0; margin-bottom: 25px; font-size: 24px; }
+    .form-group { margin-bottom: 15px; }
+    .form-group input, .form-group select { width: 100%; padding: 12px; border: none; border-radius: 8px; box-sizing: border-box; outline: none; font-size: 14px; }
+    .btn-submit { width: 100%; padding: 12px; background-color: #4a044e; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; margin-top: 10px; transition: 0.2s; }
+    .btn-submit:hover { background-color: #701a75; }
+    .btn-kembali { display: block; text-align: center; margin-top: 15px; color: #111; text-decoration: none; font-weight: bold; font-size: 14px; }
+    .btn-kembali:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2> Tambah Buku</h2>
+    <form id="formTambah">
+      <div class="form-group"><input type="text" id="inputJudul" placeholder="Judul Buku" required></div>
+      <div class="form-group"><input type="text" id="inputPenulis" placeholder="Nama Penulis" required></div>
+      <div class="form-group">
+        <!-- Pilihan ini awalnya kosong, lalu diisi oleh AJAX jQuery dari backend -->
+        <select id="selectGenre" required>
+          <option value="">Memuat Kategori...</option>
+        </select>
+      </div>
+      <div class="form-group"><input type="number" id="inputTahun" placeholder="Tahun Terbit (contoh: 2024)" required></div>
+      <button type="submit" class="btn-submit">Simpan ke Daftar</button>
+      <a href="dashboard.html" class="btn-kembali">Batal & Kembali</a>
+    </form>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      const token = localStorage.getItem('jwt_token');
+      if (!token) return window.location.href = 'login.html';
+
+      // --- TAMBAHKAN PENGECEKAN KEAMANAN INI ---
+      $.ajax({
+        url: 'http://localhost:3000/api/me',
+        type: 'GET',
+        headers: { 'Authorization': `Bearer ${token}` },
+        success: function() {
+          // Jika token valid, jalankan pemuatan kategori dan data buku
+          muatHalaman();
+        },
+        error: function() {
+          // Jika token salah/ngawur (seperti 'asd'), hapus lalu tendang ke login!
+          localStorage.removeItem('jwt_token');
+          window.location.href = 'login.html';
+        }
+      });
+
+
+      // Mengambil daftar Kategori dari Pabrik Stiker (Backend)
+      $.get('http://localhost:3000/api/categories', function(categories) {
+        $('#selectGenre').empty().append('<option value="">Pilih Kategori Genre...</option>');
+        categories.forEach(cat => {
+          $('#selectGenre').append(`<option value="${cat.id}">${cat.name}</option>`);
+        });
+      });
+
+      $('#formTambah').submit(function(e) {
+        e.preventDefault();
+        const payload = {
+          title: $('#inputJudul').val(),
+          authorName: $('#inputPenulis').val(),
+          categoryId: $('#selectGenre').val(), // Mengirim ID kategori ke backend
+          year: $('#inputTahun').val()
+        };
+
+        $.ajax({
+          url: 'http://localhost:3000/api/books', type: 'POST',
+          contentType: 'application/json',
+          headers: { 'Authorization': `Bearer ${token}` },
+          data: JSON.stringify(payload),
+          success: function() { window.location.href = 'dashboard.html'; },
+        });
+      });
+    });
+  </script>
+</body>
+</html>

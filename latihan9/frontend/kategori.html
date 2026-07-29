@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Kategori</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body { background-color: #2e1025; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; padding: 40px 20px; margin: 0; }
+    .container { background-color: #f472b6; width: 100%; max-width: 600px; padding: 40px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    h1 { color: #111; margin-top: 0; }
+    
+    .input-group { display: flex; gap: 10px; margin-bottom: 30px; }
+    .input-group input { flex: 1; padding: 12px; border: none; border-radius: 8px; outline: none; }
+    .input-group button { background-color: #4a044e; color: white; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    
+    .cat-list { display: flex; flex-direction: column; gap: 10px; }
+    .cat-item { background-color: white; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .btn-hapus { color: red; font-weight: bold; cursor: pointer; border: none; background: none; }
+    
+    .btn-kembali { display: inline-block; margin-bottom: 20px; color: #4a044e; text-decoration: none; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="dashboard.html" class="btn-kembali"> ← Kembali ke Dasbor</a>
+    <h1>Menu Kategori</h1>
+    
+    <form id="formKategori" class="input-group">
+      <input type="text" id="inputNamaKategori" placeholder="Nama Kategori Baru (Misal: Horor)" required>
+      <button type="submit">+ Tambah</button>
+    </form>
+
+    <div class="cat-list" id="catList">
+      <!-- Kategori akan muncul di sini -->
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      const token = localStorage.getItem('jwt_token');
+      if (!token) return window.location.href = 'login.html';
+
+      // --- TAMBAHKAN PENGECEKAN KEAMANAN INI ---
+      $.ajax({
+        url: 'http://localhost:3000/api/me',
+        type: 'GET',
+        headers: { 'Authorization': `Bearer ${token}` },
+        success: function() {
+          // Jika token valid, jalankan pemuatan kategori dan data buku
+          muatHalaman();
+        },
+        error: function() {
+          // Jika token salah/ngawur (seperti 'asd'), hapus lalu tendang ke login!
+          localStorage.removeItem('jwt_token');
+          window.location.href = 'login.html';
+        }
+      });
+
+
+      function loadKategori() {
+        $.get('http://localhost:3000/api/categories', function(data) {
+          $('#catList').empty();
+          data.forEach(cat => {
+            $('#catList').append(`
+              <div class="cat-item">
+                <span><strong>${cat.name}</strong></span>
+                <button class="btn-hapus" onclick="hapusCat(${cat.id})">Hapus</button>
+              </div>
+            `);
+          });
+        });
+      }
+      loadKategori();
+
+      $('#formKategori').submit(function(e) {
+        e.preventDefault();
+        $.ajax({
+          url: 'http://localhost:3000/api/categories',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ name: $('#inputNamaKategori').val() }),
+          success: function() {
+            $('#inputNamaKategori').val('');
+            loadKategori();
+          }
+        });
+      });
+
+      window.hapusCat = function(id) {
+        if(confirm('Yakin hapus kategori ini?')) {
+          $.ajax({
+            url: `http://localhost:3000/api/categories/${id}`,
+            type: 'DELETE',
+            success: function() { loadKategori(); }
+          });
+        }
+      };
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Library Pink Modern</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+  <style>
+    body { background-color: #2e1025; font-family: "Playfair Display", serif; display: flex; justify-content: center; padding: 40px 20px; margin: 0; }
+    .container { background-color: #f472b6; width: 100%; max-width: 1000px; padding: 40px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+
+    .header-nav { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 20px; margin-bottom: 20px; }
+    .header-nav h1 { margin: 0; color: #111; font-size: 32px; letter-spacing: 2px; }
+    
+    .nav-buttons { display: flex; gap: 10px; }
+    .btn-dark { background-color: #4a044e; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; text-decoration: none; font-size: 13px; transition: 0.2s; }
+    .btn-dark:hover { background-color: #701a75; }
+    .btn-logout { background-color: #be123c; }
+
+    .sub-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .sub-header h2 { margin: 0; color: #111; font-size: 20px; }
+
+    .filter-container { margin-bottom: 25px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-filter { background-color: white; color: #4a044e; border: 2px solid #fdf2f8; padding: 6px 16px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.2s; }
+    .btn-filter:hover { background-color: #fdf2f8; }
+    .btn-filter.active { background-color: #be185d; color: white; border-color: #be185d; }
+
+    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+    .book-card { background-color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; flex-direction: column; transition: 0.2s; }
+    .book-card:hover { transform: translateY(-3px); }
+
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .book-id { font-size: 13px; font-weight: bold; color: #6b7280; }
+    .badge { font-size: 10px; font-weight: bold; padding: 4px 8px; border-radius: 4px; letter-spacing: 0.5px;}
+    .badge-tersedia { background-color: #d1fae5; color: #065f46; }
+    .badge-dipinjam { background-color: #fee2e2; color: #991b1b; }
+    .badge-genre { background-color: #f3e8ff; color: #6b21a8; margin-left: 5px; }
+
+    .book-title { margin: 0 0 5px 0; font-size: 20px; color: #111; }
+    .book-author { margin: 0 0 15px 0; font-size: 14px; color: #111; }
+    .book-year { margin: 0; font-size: 13px; color: #6b7280; flex-grow: 1; }
+    
+    .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e5e7eb; padding-top: 15px; margin-top: 15px; }
+    .btn-edit { color: #2563eb; text-decoration: none; font-weight: bold; font-size: 14px; }
+    .btn-edit:hover { text-decoration: underline; }
+    .btn-hapus { color: #dc2626; text-decoration: none; font-weight: bold; font-size: 14px; cursor: pointer; border: none; background: none; padding: 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-nav">
+      <h1>Perpustakaan Mini</h1>
+      <div class="nav-buttons">
+        <a href="kategori.html" class="btn-dark">Menu Kategori</a>
+        <button class="btn-dark btn-logout" id="logoutBtn">Log Out</button>
+      </div>
+    </div>
+
+    <div class="sub-header">
+      <h2>Daftar Buku (<span id="bookCount">0</span>)</h2>
+      <a href="tambah.html" class="btn-dark">+ Tambah Buku</a>
+    </div>
+
+    <div class="filter-container" id="filterBar">
+      <button class="btn-filter active" data-filter="Semua">Semua</button>
+    </div>
+
+    <div class="book-grid" id="bookGrid"></div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      const token = localStorage.getItem('jwt_token');
+      if (!token) return window.location.href = 'login.html';
+
+      // --- TAMBAHKAN PENGECEKAN KEAMANAN INI ---
+      $.ajax({
+        url: 'http://localhost:3000/api/me',
+        type: 'GET',
+        headers: { 'Authorization': `Bearer ${token}` },
+        success: function() {
+          // Jika token valid, jalankan pemuatan kategori dan data buku
+          muatHalaman();
+        },
+        error: function() {
+          // Jika token salah/ngawur (seperti 'asd'), hapus lalu tendang ke login!
+          localStorage.removeItem('jwt_token');
+          window.location.href = 'login.html';
+        }
+      });
+
+      function muatHalaman() {
+        // Load Filter Kategori
+        $.get('http://localhost:3000/api/categories', function(categories) {
+          categories.forEach(cat => {
+            $('#filterBar').append(`<button class="btn-filter" data-filter="${cat.name}">${cat.name}</button>`);
+          });
+        });
+
+        fetchDataDanRender();
+      }
+      // --- FETCH DATA TERPISAH (Books, Authors, Categories) ---
+      function fetchDataDanRender() {
+        $.when(
+          $.ajax({ url: 'http://localhost:3000/api/books', headers: { 'Authorization': `Bearer ${token}` } }),
+          $.ajax({ url: 'http://localhost:3000/api/authors', headers: { 'Authorization': `Bearer ${token}` } }),
+          $.ajax({ url: 'http://localhost:3000/api/categories', headers: { 'Authorization': `Bearer ${token}` } })
+        ).done(function(resBooks, resAuthors, resCategories) {
+          const books = resBooks[0];
+          const authors = resAuthors[0];
+          const categories = resCategories[0];
+
+          $('#bookCount').text(books.length);
+          $('#bookGrid').empty();
+
+          books.forEach(function(book) {
+            // Cari Author dan Category secara terpisah berdasarkan ID
+            const author = authors.find(a => a.id === book.authorId);
+            const category = categories.find(c => c.id === book.categoryId);
+
+            const authorName = author ? author.name : "Penulis Tidak Diketahui";
+            const genreName = category ? category.name : "Umum";
+
+            const badgeClass = book.available ? 'badge-tersedia' : 'badge-dipinjam';
+            const badgeText = book.available ? 'TERSEDIA' : 'DIPINJAM';
+
+            $('#bookGrid').append(`
+              <div class="book-card" data-genre="${genreName}">
+                <div class="card-header">
+                  <span class="book-id">ID: #${book.id}</span>
+                  <div>
+                    <span class="badge ${badgeClass}">${badgeText}</span>
+                    <span class="badge badge-genre">${genreName}</span>
+                  </div>
+                </div>
+                <h3 class="book-title">${book.title}</h3>
+                <p class="book-author"><em>Oleh</em> <strong>${authorName}</strong></p>
+                <p class="book-year">Tahun: ${book.year}</p>
+                <div class="card-footer">
+                  <a href="edit.html?id=${book.id}" class="btn-edit">Edit</a>
+                  <button class="btn-hapus" onclick="hapusBuku(${book.id})">Hapus</button>
+                </div>
+              </div>
+            `);
+          });
+        });
+      }
+
+      fetchDataDanRender();
+
+      // Filter Kategori
+      $(document).on('click', '.btn-filter', function() {
+        $('.btn-filter').removeClass('active'); 
+        $(this).addClass('active'); 
+        const genrePilihan = $(this).data('filter');
+        if(genrePilihan === 'Semua') {
+          $('.book-card').show(); 
+        } else {
+          $('.book-card').hide(); 
+          $(`.book-card[data-genre="${genrePilihan}"]`).show(); 
+        }
+      });
+
+      window.hapusBuku = function(id) {
+        if(confirm('Yakin ingin menghapus buku ini?')) {
+          $.ajax({
+            url: `http://localhost:3000/api/books/${id}`, type: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` },
+            success: function() { fetchDataDanRender(); }
+          });
+        }
+      };
+
+      $('#logoutBtn').click(function() {
+        localStorage.removeItem('jwt_token');
+        window.location.href = 'login.html';
+      });
+    });
+  </script>
+</body>
+</html>
